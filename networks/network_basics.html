@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Network Basics</title>
+    <style>
+      :root {
+        --bg: #f5f7fb;
+        --panel: #ffffff;
+        --soft: #eef4ff;
+        --primary: #1d4ed8;
+        --primary-deep: #0f172a;
+        --success: #10b981;
+        --text: #1f2937;
+        --muted: #6b7280;
+        --border: #dfe7f5;
+        --code-bg: #0f172a;
+        --code-text: #e2e8f0;
+        --shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+      }
+
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: linear-gradient(180deg, #eef5ff 0%, var(--bg) 160px, #f8fafc 100%);
+        color: var(--text);
+      }
+      a { color: var(--primary); text-decoration: none; }
+      a:hover { text-decoration: underline; }
+
+      .nav-wrap {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        background: rgba(255,255,255,0.9);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid var(--border);
+      }
+      .nav {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 14px 20px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .nav a {
+        padding: 8px 12px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: var(--panel);
+        font-size: 0.82rem;
+        color: var(--text);
+      }
+      .nav a:hover {
+        background: var(--soft);
+        text-decoration: none;
+      }
+
+      .page {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 30px 20px 80px;
+      }
+
+      .hero {
+        background: linear-gradient(135deg, #0f172a 0%, #1d4ed8 52%, #2563eb 100%);
+        color: white;
+        border-radius: 28px;
+        padding: 36px 32px;
+        box-shadow: var(--shadow);
+        margin-bottom: 28px;
+      }
+      .hero .label {
+        display: inline-block;
+        font-size: 0.72rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        border: 1px solid rgba(255,255,255,0.22);
+        background: rgba(255,255,255,0.08);
+        border-radius: 999px;
+        padding: 8px 12px;
+        margin-bottom: 18px;
+      }
+      .hero h1 {
+        margin: 0 0 12px;
+        font-size: clamp(2.1rem, 4vw, 4rem);
+        line-height: 1.08;
+      }
+      .hero p {
+        margin: 0;
+        color: rgba(255,255,255,0.93);
+        line-height: 1.75;
+        max-width: 900px;
+        font-size: 1.05rem;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: 1.6fr 0.9fr;
+        gap: 28px;
+      }
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 22px;
+        box-shadow: var(--shadow);
+        padding: 24px 22px;
+        margin-bottom: 28px;
+      }
+      .panel h2 {
+        margin: 0 0 14px;
+        font-size: clamp(1.5rem, 2vw, 2.2rem);
+        color: var(--primary-deep);
+      }
+      .panel h3 {
+        margin: 26px 0 12px;
+        color: #132a57;
+        font-size: 1.18rem;
+      }
+      .panel p, .panel li {
+        line-height: 1.82;
+        font-size: 1.02rem;
+        color: var(--text);
+      }
+      .panel ul, .panel ol {
+        margin: 12px 0 18px 20px;
+        padding-left: 18px;
+      }
+      .quote {
+        background: linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%);
+        border-left: 5px solid var(--primary);
+        border-radius: 14px;
+        padding: 16px 18px;
+        margin: 16px 0;
+      }
+      .quote strong { color: var(--primary-deep); }
+      .code {
+        background: var(--code-bg);
+        border-radius: 16px;
+        overflow: auto;
+        margin: 18px 0;
+        border: 1px solid rgba(255,255,255,0.08);
+      }
+      pre {
+        margin: 0;
+        padding: 18px 20px;
+        color: var(--code-text);
+        font-size: 0.9rem;
+        line-height: 1.6;
+        white-space: pre-wrap;
+      }
+      .toc {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: grid;
+        gap: 8px;
+      }
+      .toc li {
+        display: inline-block;
+      }
+      .toc a {
+        display: block;
+        padding: 8px 10px;
+        border-radius: 10px;
+        background: #f8fbff;
+        border: 1px solid var(--border);
+        color: var(--primary-deep);
+      }
+      .tag-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        list-style: none;
+        padding: 0;
+        margin: 16px 0 0;
+      }
+      .tag-list li {
+        background: #e0edff;
+        color: var(--primary);
+        font-size: 0.8rem;
+        padding: 7px 12px;
+        border-radius: 999px;
+        font-weight: 700;
+      }
+      .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 18px 0;
+      }
+      .table th, .table td {
+        border: 1px solid var(--border);
+        padding: 10px 12px;
+        text-align: left;
+        vertical-align: top;
+      }
+      .table th {
+        background: #f3f7ff;
+        color: var(--primary-deep);
+      }
+      .footnote {
+        font-size: 0.88rem;
+        color: var(--muted);
+      }
+      @media (max-width: 900px) {
+        .grid { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="nav-wrap">
+      <nav class="nav">
+        <a href="#intro">Intro</a>
+        <a href="#packet">Packets</a>
+        <a href="#dns">DNS</a>
+        <a href="#tls">TLS</a>
+        <a href="#transport">Transport</a>
+        <a href="#osi">OSI</a>
+        <a href="#http">HTTP</a>
+        <a href="#aws">AWS</a>
+        <a href="#roadmap">Roadmap</a>
+      </nav>
+    </div>
+
+    <div class="page">
+      <section class="hero" id="intro">
+        <div class="label">Study Book</div>
+        <h1>How the Internet Works — From a 5-Year-Old to an Engineer</h1>
+        <p>
+          This note explains the internet in simple language first, then introduces the real technical terms and removes the simplification gradually.
+          The goal is to understand not only names like DNS or TCP, but also what actually happens inside AWS, browsers, APIs, routers, CDNs,
+          and modern web stacks.
+        </p>
+      </section>
+
+      <div class="grid">
+        <div class="panel">
+          <h2>Big picture</h2>
+          <p>
+            When you type <strong>https://www.youtube.com</strong> and press Enter, a lot happens: DNS resolves the domain, routers move packets,
+            TLS secures the connection, HTTP sends the request, and the server returns the response. The internet is a giant system built from
+            addresses, protocols, and routes.
+          </p>
+          <div class="code"><pre>Your Browser
+     ↓
+Your OS
+     ↓
+Wi‑Fi / Ethernet
+     ↓
+Home Router
+     ↓
+ISP
+     ↓
+Internet Routers
+     ↓
+DNS
+     ↓
+CDN / Load Balancer
+     ↓
+YouTube Server
+     ↓
+Application
+     ↓
+Database / Cache / Storage
+     ↓
+Response
+     ↓
+Internet
+     ↓
+Your Browser
+     ↓
+Video appears</pre></div>
+          <div class="quote">
+            <strong>Core idea:</strong> the internet is not one giant machine; it is a connected system of devices, routes, and protocols.
+          </div>
+        </div>
+
+        <aside class="panel">
+          <h2>Table of contents</h2>
+          <ul class="toc">
+            <li><a href="#postal">1. Postal system analogy</a></li>
+            <li><a href="#packet">2. Packets</a></li>
+            <li><a href="#device">3. Device and IP</a></li>
+            <li><a href="#wifi">4. Wi‑Fi, MAC, and ARP</a></li>
+            <li><a href="#router">5. Routers and BGP</a></li>
+            <li><a href="#dns">6. DNS</a></li>
+            <li><a href="#tls">7. HTTPS and TLS</a></li>
+            <li><a href="#transport">8. TCP and QUIC</a></li>
+            <li><a href="#osi">9. OSI and encapsulation</a></li>
+            <li><a href="#http">10. HTTP and ports</a></li>
+            <li><a href="#backend">11. Node.js and backend</a></li>
+            <li><a href="#aws">12. AWS and cloud</a></li>
+            <li><a href="#endtoend">13. End-to-end flow</a></li>
+            <li><a href="#roadmap">14. Learning roadmap</a></li>
+          </ul>
+        </aside>
+      </div>
+
+      <section class="panel" id="postal">
+        <h2>Level 1 — Imagine the internet is a huge postal system</h2>
+        <p>
+          Suppose you want to send a toy to your friend living at a specific address in another city. You need an address, a way to travel,
+          a vehicle, a way to split the package when necessary, and a way to ensure it arrives correctly. The internet works similarly.
+        </p>
+        <p>Instead of houses, there are <strong>IP addresses</strong>. Instead of roads, there are <strong>network links</strong>. Instead of postal vehicles, there are <strong>packets</strong>.</p>
+        <p>Computers ask: “What IP address belongs to youtube.com?” That is where <strong>DNS</strong> comes in.</p>
+      </section>
+
+      <section class="panel" id="packet">
+        <h2>Level 2 — The most important word: packet</h2>
+        <p>
+          You do not normally send one giant message as a single block. Instead, information is broken into smaller pieces called <strong>packets</strong>.
+          Each packet includes metadata such as source, destination, protocol information, payload, and sequence control information.
+        </p>
+        <div class="code"><pre>┌─────────────────────────────┐
+│ Source IP                   │
+│ Destination IP              │
+│ Protocol                    │
+│ Port                        │
+│ Sequence / control info     │
+│                             │
+│        PAYLOAD              │
+│        actual data          │
+└─────────────────────────────┘</pre></div>
+        <p>
+          The internet moves packets independently. They travel through different routes and are later reassembled at the destination.
+          The packet approach is one of the central ideas behind modern networking.
+        </p>
+      </section>
+
+      <section class="panel" id="device">
+        <h2>Level 3 — Your device</h2>
+        <p>
+          Your laptop may have a private IP such as <strong>192.168.1.10</strong>. Your phone might have <strong>192.168.1.11</strong>.
+          These are usually private IP addresses inside your home or office network. Your router may have <strong>192.168.1.1</strong>.
+        </p>
+        <p>
+          But the outside world does not usually see your laptop directly. A router performs <strong>NAT</strong> (Network Address Translation):
+          it translates the private IP to a public IP used on the internet.
+        </p>
+        <div class="code"><pre>Laptop
+192.168.1.10
+      ↓
+Router
+      ↓
+Public IP
+49.xxx.xxx.xxx
+      ↓
+Internet</pre></div>
+
+        <h3>IP vs MAC</h3>
+        <p>
+          IP is a logical network address. MAC is a hardware-level address for the local network interface. Example:
+        </p>
+        <div class="code"><pre>IP:  192.168.1.10
+MAC: A4:5E:60:12:AB:91</pre></div>
+        <p>IP identifies the network location; MAC identifies the network card on the local segment.</p>
+      </section>
+
+      <section class="panel" id="wifi">
+        <h2>Level 4 — Wi‑Fi</h2>
+        <p>
+          Your laptop connects to the router using Wi‑Fi or Ethernet. This happens at the local network level. There are many technical details:
+          IEEE 802.11, radio frequency, channels, SSID, BSSID, MAC address, frames, access points, authentication, encryption, WPA2, WPA3.
+        </p>
+        <p>Notice something important: <strong>IP address and MAC address are not the same thing.</strong></p>
+
+        <h3>ARP</h3>
+        <p>
+          Suppose your computer knows the router IP, such as <strong>192.168.1.1</strong>, but not the router's MAC address. It asks:
+          “Who has 192.168.1.1?” This is addressed through <strong>ARP</strong> (Address Resolution Protocol).
+        </p>
+        <div class="code"><pre>Laptop: "Who has 192.168.1.1?"
+Router: "That's me. My MAC is AA:BB:CC:DD:EE:FF"</pre></div>
+        <p>IPv6 uses <strong>Neighbor Discovery Protocol (NDP)</strong> instead of ARP.</p>
+      </section>
+
+      <section class="panel" id="router">
+        <h2>Level 5 — You leave your home: routers and the internet</h2>
+        <p>
+          Your router connects to an ISP such as Airtel, Jio, BSNL, ACT, and so on. Packets then travel through ISP core networks and internet routers.
+          There is not one single internet router; there are millions of devices and links.
+        </p>
+
+        <h3>Routers</h3>
+        <p>A router's basic job is: “Where should I send this packet next?” It uses routing information to choose the best next hop.</p>
+        <div class="code"><pre>Destination       Next Hop
+--------------------------------
+10.0.0.0/8        Router A
+20.0.0.0/8        Router B
+142.250.0.0/16    Router C
+0.0.0.0/0         Router D</pre></div>
+
+        <h3>Autonomous Systems and BGP</h3>
+        <p>
+          Large networks are grouped into <strong>Autonomous Systems</strong> (AS). The protocol used between autonomous systems is <strong>BGP</strong>
+          (Border Gateway Protocol). It helps networks announce which IP prefixes they can reach.
+        </p>
+      </section>
+
+      <section class="panel" id="dns">
+        <h2>Level 6 — DNS</h2>
+        <p>
+          Humans prefer names like <strong>youtube.com</strong>, while computers prefer IP addresses. DNS converts names into addresses.
+          This is the internet’s phone book.
+        </p>
+        <div class="code"><pre>youtube.com
+      ↓
+DNS
+      ↓
+142.xxx.xxx.xxx</pre></div>
+        <p>
+          DNS is hierarchical: root DNS servers, TLD servers such as <strong>.com</strong>, and authoritative DNS servers together map names to addresses.
+          There are also caches in browsers, operating systems, routers, and ISPs to reduce latency.
+        </p>
+        <div class="quote">
+          <strong>DNS caching:</strong> your browser, OS, router, and ISP resolver can cache results so you do not hit the whole hierarchy every time.
+        </div>
+      </section>
+
+      <section class="panel" id="tls">
+        <h2>Level 7 — HTTPS and TLS</h2>
+        <p>
+          Your browser needs a secure way to talk to the server. That is why we use <strong>HTTPS</strong>, which normally wraps HTTP with <strong>TLS</strong>.
+          TLS provides encryption, authentication, and integrity.
+        </p>
+        <p>Modern systems commonly use <strong>TLS 1.3</strong>.</p>
+        <h3>Certificates</h3>
+        <p>
+          When you visit a site, the server presents a certificate that contains data about the domain, issuer, public key, validity, and signature.
+          Your browser verifies the certificate using a trusted certificate chain.
+        </p>
+        <div class="code"><pre>Certificate
+-------------------------
+Domain: example.com
+Issuer: DigiCert
+Public Key: ...
+Validity: ...
+Signature: ...</pre></div>
+        <h3>Public-key cryptography</h3>
+        <p>
+          Public-key cryptography uses a public key and a private key. The public key can be shared widely; the private key is kept secret by the server.
+          This is the foundation of secure internet communication.
+        </p>
+      </section>
+
+      <section class="panel" id="transport">
+        <h2>Level 8 — TCP, QUIC, and modern transport</h2>
+        <p>
+          Traditionally, web traffic used <strong>TCP</strong> as the transport protocol. TCP provides reliability by detecting missing packets and resending them.
+          It also tracks sequence numbers, acknowledgements, flow control, congestion control, and connection state.
+        </p>
+        <div class="code"><pre>Client                    Server
+  SYN  ------------------>
+       <------------------ SYN-ACK
+  ACK  ------------------></pre></div>
+        <p>
+          Modern traffic increasingly uses <strong>HTTP/3</strong> on top of <strong>QUIC</strong>, which runs over <strong>UDP</strong>.
+          QUIC provides streams, reliability, congestion control, connection migration, and encryption integrated through TLS.
+        </p>
+        <div class="code"><pre>Application
+    ↓
+HTTP/3
+    ↓
+QUIC
+    ↓
+UDP
+    ↓
+IP</pre></div>
+        <p>
+          This is a major movement away from legacy HTTP/1.1 + TCP stacks, and it is increasingly important in modern web infrastructure.
+        </p>
+      </section>
+
+      <section class="panel" id="osi">
+        <h2>Level 9 — OSI model and encapsulation</h2>
+        <p>The common networking model is the <strong>OSI 7-layer model</strong>:</p>
+        <table class="table">
+          <tr><th>Layer</th><th>Name</th></tr>
+          <tr><td>7</td><td>Application</td></tr>
+          <tr><td>6</td><td>Presentation</td></tr>
+          <tr><td>5</td><td>Session</td></tr>
+          <tr><td>4</td><td>Transport</td></tr>
+          <tr><td>3</td><td>Network</td></tr>
+          <tr><td>2</td><td>Data Link</td></tr>
+          <tr><td>1</td><td>Physical</td></tr>
+        </table>
+        <p>In practice, engineers often use the simpler <strong>TCP/IP model</strong>:</p>
+        <div class="code"><pre>Application
+    ↓
+Transport
+    ↓
+Internet
+    ↓
+Link</pre></div>
+        <p>
+          Each layer adds metadata around the data. This is called <strong>encapsulation</strong>. On the receiving side, the layers remove the labels in reverse
+          order; that is called <strong>decapsulation</strong>.
+        </p>
+      </section>
+
+      <section class="panel" id="http">
+        <h2>Level 10 — Ports and HTTP</h2>
+        <p>
+          An IP address identifies a machine, but a computer needs a <strong>port</strong> to know which application should receive a packet.
+          Example: <strong>192.168.1.10:443</strong>.
+        </p>
+        <div class="code"><pre>22   SSH
+25   SMTP
+53   DNS
+80   HTTP
+443  HTTPS
+3306 MySQL
+5432 PostgreSQL
+6379 Redis
+27017 MongoDB</pre></div>
+        <p>HTTP is the application-layer protocol for web requests and responses. Common methods include GET, POST, PUT, PATCH, DELETE, HEAD, and OPTIONS.</p>
+        <div class="code"><pre>GET /products HTTP/1.1
+Host: example.com
+Accept: application/json</pre></div>
+        <p>Common status codes include 200 OK, 201 Created, 204 No Content, 301, 302, 304, 400, 401, 403, 404, 429, 500, 502, 503, and 504.</p>
+      </section>
+
+      <section class="panel" id="backend">
+        <h2>Level 11 — Your Node.js backend in the real path</h2>
+        <p>
+          Suppose your app is a Node.js service running in AWS, backed by MongoDB or PostgreSQL. A request path might look like this:
+        </p>
+        <div class="code"><pre>Browser
+   ↓
+HTTPS
+   ↓
+Load Balancer
+   ↓
+Node.js
+   ↓
+Controller
+   ↓
+Service
+   ↓
+Repository
+   ↓
+MongoDB</pre></div>
+        <p>
+          This reminds us that the application code is only one small piece of the whole journey. The actual internet path includes DNS, routing,
+          TLS, load balancing, cache, storage, and infrastructure.
+        </p>
+      </section>
+
+      <section class="panel" id="aws">
+        <h2>Level 12 — AWS and cloud infrastructure</h2>
+        <p>
+          In AWS, an application may sit behind Route 53, CloudFront, an Application Load Balancer, EC2/ECS/EKS, and a database service.
+        </p>
+        <div class="code"><pre>Internet
+   ↓
+DNS (Route 53)
+   ↓
+CDN (CloudFront)
+   ↓
+Load Balancer (ALB)
+   ↓
+EC2 / ECS / EKS
+   ↓
+MongoDB / PostgreSQL / Redis</pre></div>
+        <p>
+          This is the place where networking meets distributed systems: VPCs, subnets, route tables, security groups, NAT gateways,
+          internet gateways, load balancers, and edge services become essential knowledge.
+        </p>
+      </section>
+
+      <section class="panel">
+        <h2>Level 13 — CDN, data centers, and load balancers</h2>
+        <p>
+          A Content Delivery Network stores copies of content near users so videos or assets do not always have to travel from the original server.
+          Data centers house servers, switches, routers, storage, and network equipment. A load balancer distributes traffic so no single backend becomes overloaded.
+        </p>
+        <div class="code"><pre>             Origin
+              USA
+               │
+       ┌───────┼───────┐
+       ↓       ↓       ↓
+     India   Europe   Japan
+      CDN      CDN      CDN</pre></div>
+      </section>
+
+      <section class="panel">
+        <h2>Level 14 — Caches and databases</h2>
+        <p>
+          If one million users request the same resource, it is wasteful to query the database each time. A cache such as Redis can serve repeated answers faster.
+          Concepts include cache hit, cache miss, TTL, eviction, LRU, write-through, write-back, and cache invalidation.
+        </p>
+        <div class="code"><pre>Client
+  ↓
+Application
+  ↓
+Redis
+  ↓
+Cache HIT</pre></div>
+        <p>Databases add indexes, transactions, replication, sharding, WAL, B-trees, LSM trees, and connection pools.</p>
+      </section>
+
+      <section class="panel" id="endtoend">
+        <h2>Level 15 — Real end-to-end example</h2>
+        <p>You type <strong>https://api.example.com/users/123</strong>.</p>
+        <ol>
+          <li>Browser parses the URL: scheme, host, and path.</li>
+          <li>Browser asks DNS for the IP address.</li>
+          <li>Computer determines the route via the routing table and gateway.</li>
+          <li>Packets travel through Wi‑Fi, router, ISP, and internet infrastructure.</li>
+          <li>The browser establishes a secure connection using TLS, often with QUIC or TCP.</li>
+          <li>Browser sends an HTTP request.</li>
+          <li>CDN or load balancer may handle the request.</li>
+          <li>Backend service queries a database and returns a response.</li>
+          <li>The response is sent back as packets and reconstructed in the browser.</li>
+        </ol>
+        <div class="code"><pre>HTTP/3 200
+Content-Type: application/json
+
+{
+  "id": 123,
+  "name": "Akash"
+}</pre></div>
+        <p>And all of this can happen in milliseconds.</p>
+      </section>
+
+      <section class="panel" id="roadmap">
+        <h2>Technology stack you need to eventually know</h2>
+        <ul>
+          <li><strong>LEVEL 0:</strong> Computer fundamentals — binary, bits, bytes, CPU, RAM, storage, OS.</li>
+          <li><strong>LEVEL 1:</strong> Networking fundamentals — IP, MAC, Ethernet, Wi‑Fi, ARP, ICMP, subnetting, CIDR, NAT, DHCP.</li>
+          <li><strong>LEVEL 2:</strong> Routing — static routing, dynamic routing, OSPF, BGP, AS, Anycast.</li>
+          <li><strong>LEVEL 3:</strong> Transport — TCP, UDP, QUIC, ports, sockets, handshakes, flow control, congestion control, retransmission.</li>
+          <li><strong>LEVEL 4:</strong> DNS — resolver, root, TLD, authoritative DNS, A, AAAA, CNAME, MX, TXT, NS, TTL, DNSSEC, DoH, DoQ.</li>
+          <li><strong>LEVEL 5:</strong> Security — TLS, TLS 1.2, TLS 1.3, certificates, CA, PKI, keys, hashing, signatures, mTLS.</li>
+          <li><strong>LEVEL 6:</strong> Web — HTTP/1.1, HTTP/2, HTTP/3, REST, WebSockets, SSE, cookies, sessions, CORS, CSP, OAuth/OIDC.</li>
+          <li><strong>LEVEL 7:</strong> Infrastructure — CDN, reverse proxy, load balancer, edge computing, caching.</li>
+          <li><strong>LEVEL 8:</strong> Cloud — AWS, VPC, subnets, route tables, security groups, NACL, NAT Gateway, Internet Gateway, ALB, NLB, EC2, ECS, EKS, CloudFront.</li>
+          <li><strong>LEVEL 9:</strong> Distributed systems — replication, sharding, leader election, consensus, CAP theorem, event-driven systems, message queues.</li>
+          <li><strong>LEVEL 10:</strong> Production engineering — observability, logs, metrics, traces, SLIs, SLOs, incident management.</li>
+        </ul>
+      </section>
+
+      <section class="panel">
+        <h2>Current Internet topics to know in 2026</h2>
+        <ul>
+          <li><strong>HTTP/3</strong> — HTTP over QUIC.</li>
+          <li><strong>QUIC</strong> — reliable multiplexed transport over UDP.</li>
+          <li><strong>DNS over HTTPS (DoH)</strong> — DNS traffic over HTTPS/TLS.</li>
+          <li><strong>DNS over QUIC (DoQ)</strong> — DNS over QUIC.</li>
+          <li><strong>IPv6</strong> — modern addressing and routing.</li>
+          <li><strong>Encrypted DNS</strong> — DoT, DoH, DoQ.</li>
+          <li><strong>HTTP/2</strong> — streams, frames, multiplexing, HPACK.</li>
+          <li><strong>TLS 1.3</strong> — handshake, certificates, session resumption, 0-RTT.</li>
+          <li><strong>Anycast</strong> — global routing for CDNs, DNS, and DDoS mitigation.</li>
+          <li><strong>Edge computing</strong> — applications deployed near users.</li>
+        </ul>
+      </section>
+
+      <section class="panel">
+        <h2>Most important mental model</h2>
+        <div class="code"><pre>DNS
+ ↓
+IP
+ ↓
+Routing
+ ↓
+TCP/QUIC
+ ↓
+TLS
+ ↓
+HTTP
+ ↓
+Application
+
+CDN
+ ↓
+Load Balancer
+ ↓
+Reverse Proxy
+ ↓
+Application
+ ↓
+Cache
+ ↓
+Database
+ ↓
+Storage</pre></div>
+        <p>
+          Do not memorize only protocol names. Understand the flow: <strong>URL → DNS → IP → routing → transport → security → HTTP → app → data</strong>.
+        </p>
+      </section>
+
+      <section class="panel">
+        <h2>For you specifically</h2>
+        <p>
+          Since you already work with Node.js, AWS, MongoDB, APIs, and backend systems, the most useful learning path is not a pure networking course.
+          Instead, learn the path of a real request from the browser to the database and back.
+        </p>
+        <div class="code"><pre>Browser
+   ↓
+URL
+   ↓
+DNS
+   ↓
+IP
+   ↓
+MAC
+   ↓
+ARP/NDP
+   ↓
+Router
+   ↓
+NAT
+   ↓
+ISP
+   ↓
+BGP
+   ↓
+TCP / UDP
+   ↓
+QUIC
+   ↓
+TLS
+   ↓
+HTTP/1.1
+   ↓
+HTTP/2
+   ↓
+HTTP/3
+   ↓
+CDN
+   ↓
+Load Balancer
+   ↓
+Reverse Proxy
+   ↓
+Node.js
+   ↓
+NestJS
+   ↓
+Redis
+   ↓
+MongoDB
+   ↓
+AWS
+   ↓
+Distributed Systems</pre></div>
+        <p>
+          For every step, go from “5-year-old explanation” to “engineering explanation,” then to packet-level behavior and real commands such as nslookup,
+          dig, ping, traceroute, curl, ss, ip addr, netstat, tcpdump, and openssl s_client.
+        </p>
+      </section>
+
+      <section class="panel">
+        <h2>Common missing basics</h2>
+        <ul>
+          <li><strong>DHCP:</strong> automatically assigns IP addresses on a local network.</li>
+          <li><strong>ICMP:</strong> used for ping, traceroute, and error reporting.</li>
+          <li><strong>Subnetting and CIDR:</strong> how IP ranges are split and managed.</li>
+          <li><strong>IPv6 and NAT64/DNS64:</strong> modern internet addressing.</li>
+          <li><strong>Gateway and default route:</strong> how traffic leaves a local network.</li>
+          <li><strong>Socket:</strong> the combination of IP and port used by an application.</li>
+          <li><strong>Connection state:</strong> how protocols track sessions.</li>
+          <li><strong>Flow control and congestion control:</strong> how networks avoid overload.</li>
+          <li><strong>TTL:</strong> packet lifetime to prevent loops.</li>
+          <li><strong>Reverse proxy and load balancing:</strong> route traffic to app servers.</li>
+          <li><strong>Caching and invalidation:</strong> optimize repeated responses.</li>
+        </ul>
+      </section>
+
+      <section class="panel">
+        <h2>Helpful commands</h2>
+        <div class="code"><pre>nslookup google.com
+dig google.com
+ping google.com
+traceroute google.com
+ipconfig
+ip addr
+ip route
+arp
+netstat
+ss
+curl -v https://example.com
+openssl s_client -connect example.com:443</pre></div>
+      </section>
+
+      <section class="panel">
+        <h2>References</h2>
+        <p class="footnote">
+          [1] RFC 9114 – HTTP/3<br />
+          [2] RFC 9000 – QUIC: A UDP-Based Multiplexed and Secure Transport<br />
+          [3] RFC 9250 – DNS over Dedicated QUIC Connections
+        </p>
+      </section>
+    </div>
+  </body>
+</html>
