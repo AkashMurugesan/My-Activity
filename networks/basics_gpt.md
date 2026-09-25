@@ -4,6 +4,57 @@ I’ll explain the concepts in simple language first, then introduce the **real 
 
 A lot of modern Internet traffic now involves **HTTP/3 + QUIC + TLS 1.3**, rather than only the traditional HTTP/1.1 + TCP model. HTTP/3 maps HTTP onto QUIC, and QUIC integrates TLS 1.3 into its transport handshake. ([IETF Datatracker][1])
 
+# Network Basics — Organized Notes
+
+## Quick map of the Internet
+
+The Internet can be understood as a stack of responsibilities:
+
+```text
+User app
+  ↓
+HTTP / DNS / WebSocket
+  ↓
+TCP / UDP / QUIC
+  ↓
+IP / ICMP
+  ↓
+Ethernet / Wi-Fi
+  ↓
+Physical media
+```
+
+This is the big picture behind everything that follows.
+
+## Table of contents
+
+- Internet basics and postal-system analogy
+- Packets and addressing
+- Device networking: IP, MAC, NAT, Wi-Fi, ARP
+- Routers, routing, BGP, and autonomous systems
+- DNS and DNS caching
+- HTTPS, TLS, certificates, and public-key cryptography
+- TCP, three-way handshake, and modern QUIC/HTTP/3
+- OSI/TCP-IP model and encapsulation
+- Ports, HTTP, Node.js backend flow, AWS, CDN, load balancers, cache, and databases
+- Modern 2026 networking topics and learning roadmap
+
+## Missing basics worth remembering
+
+These are the concepts often missed when someone first studies networking:
+
+- DHCP: automatically assigns IP addresses to devices on a local network
+- ICMP: used for ping, traceroute, and error reporting
+- Subnetting and CIDR: how IP ranges are split and managed
+- IPv6 and NAT64/DNS64: the modern internet addressing model
+- Gateway and default route: how traffic leaves a local network
+- Socket: the combination of IP + port used by applications
+- Connection state: how transport protocols track sessions
+- Flow control and congestion control: how networks avoid overload
+- TTL: a packet lifetime value used to prevent loops
+- Reverse proxy and load balancer: how traffic is routed to app servers
+- Caching and invalidation: how repeated responses are optimized
+
 # 🌍 How the Internet Works — From a 5-Year-Old to an Engineer
 
 Imagine you are sitting at home with your laptop.
